@@ -9,7 +9,7 @@ A personal beer journal for two. Log the beers you meet, wherever you meet them,
 - **Beers** — searchable library (name, brewery, style, place, notes) with filters and sorts including each person's rating and biggest disagreement.
 - **Breweries** — built automatically from what you've actually logged.
 - **Insights** — "Our taste" observations (only when the data supports them), style breakdown, per-person style ratings, rating distribution, brewery performance, timeline, disagreements, and a Beer Map drawn only from your own places.
-- **Settings** — CSV import (column mapping, preview, duplicate detection), CSV export, full JSON backup/restore with photos, demo data, names, theme.
+- **Settings** — CSV import (column mapping, preview, duplicate detection), CSV export, full JSON backup/restore with photos, names, theme.
 
 ## Data
 

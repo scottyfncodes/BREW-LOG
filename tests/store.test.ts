@@ -105,16 +105,20 @@ describe('store + IndexedDB persistence', () => {
     expect(s.snap.breweries).toHaveLength(0);
   });
 
-  it('loads and clears demo data without touching real entries', async () => {
-    const { s } = await fresh();
+  it('removes leftover sample data on startup without touching real entries', async () => {
+    const { s, name } = await fresh();
     const mine = await s.saveBeer(base());
-    await s.loadDemo();
-    expect(s.hasDemo).toBe(true);
-    expect(s.snap.beers.length).toBeGreaterThan(20);
-    await s.clear('demo');
-    expect(s.hasDemo).toBe(false);
-    expect(s.snap.beers.map((b) => b.id)).toEqual([mine]);
-    expect(s.snap.breweries).toHaveLength(1);
+    const now = Date.now();
+    await s.repo.bulkPut({
+      breweries: [{ id: 'demo_br_0', name: 'Sample Ales', createdAt: now, updatedAt: now, demo: true }],
+      beers: [{ id: 'demo_b_0', breweryId: 'demo_br_0', name: 'Sample', style: 'IPA', date: '2026-01-01', createdAt: now, updatedAt: now, demo: true }],
+      ratings: [{ id: 'demo_b_0:scott', beerId: 'demo_b_0', personId: 'scott', score: 8, updatedAt: now }],
+    });
+    const again = new Store(new IDBRepository(name));
+    await again.init();
+    expect(again.snap.beers.map((b) => b.id)).toEqual([mine]);
+    expect(again.snap.breweries.map((b) => b.name)).toEqual(['Avery Brewing']);
+    expect(again.snap.ratings.every((r) => r.beerId === mine)).toBe(true);
   });
 
   it('backs up and restores by merging', async () => {

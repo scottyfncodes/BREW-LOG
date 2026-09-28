@@ -160,36 +160,6 @@ export function Settings() {
           <p class="small muted">Restoring merges by entry: nothing is deleted, and the most recently edited version of each beer wins.</p>
         </section>
 
-        <section class="card set-item">
-          <h3>Demo data</h3>
-          {store.hasDemo ? (
-            <>
-              <p>{plural(store.snap.beers.filter((b) => b.demo).length, 'demo beer')} are loaded and labeled “DEMO”. Clearing them leaves your own entries untouched.</p>
-              <button
-                class="btn"
-                onClick={async () => {
-                  await store.clear('demo');
-                  toast('Demo data cleared');
-                }}
-              >
-                Clear demo data
-              </button>
-            </>
-          ) : (
-            <>
-              <p>Load a small, clearly-labeled fictional history to see how the landscape and insights look with more data.</p>
-              <button
-                class="btn"
-                onClick={async () => {
-                  await store.loadDemo();
-                  toast('Demo data loaded');
-                }}
-              >
-                Load demo data
-              </button>
-            </>
-          )}
-        </section>
 
         <section class="card set-item">
           <h3>Storage</h3>

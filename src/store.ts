@@ -2,7 +2,6 @@ import { useEffect, useState } from 'preact/hooks';
 import type { Beer, BeerView, Brewery, ID, Person, Photo, Rating, Snapshot } from './data/types';
 import { IDBRepository, type Repository } from './data/db';
 import { buildViews, DEFAULT_PEOPLE } from './data/views';
-import { demoSnapshot } from './data/demo';
 import { breweryKey, isValidScore, round1, titleish, todayISO, uid } from './data/util';
 import { canonicalStyle } from './data/styles';
 import { mergeSnapshots } from './data/backup';
@@ -71,6 +70,11 @@ export class Store {
   async init() {
     try {
       this.snap = await this.repo.load();
+      // Earlier versions could load sample beers; remove any that remain.
+      if (this.snap.beers.some((b) => b.demo) || this.snap.breweries.some((b) => b.demo)) {
+        await this.repo.clear('demo');
+        this.snap = await this.repo.load();
+      }
       if (!this.snap.people.length) {
         await this.repo.savePeople(DEFAULT_PEOPLE);
         this.snap.people = DEFAULT_PEOPLE.map((p) => ({ ...p }));
@@ -83,10 +87,6 @@ export class Store {
       this.ready = true;
     }
     this.emit();
-  }
-
-  get hasDemo() {
-    return this.snap.beers.some((b) => b.demo);
   }
 
   view(id: ID) {
@@ -200,18 +200,6 @@ export class Store {
   async updatePeople(people: Person[]) {
     await this.repo.savePeople(people);
     this.snap.people = people;
-    this.emit();
-  }
-
-  async loadDemo() {
-    const demo = demoSnapshot();
-    await this.repo.bulkPut(demo);
-    const ids = new Set(this.snap.beers.map((b) => b.id));
-    this.snap.beers = [...this.snap.beers, ...demo.beers.filter((b) => !ids.has(b.id))];
-    const bids = new Set(this.snap.breweries.map((b) => b.id));
-    this.snap.breweries = [...this.snap.breweries, ...demo.breweries.filter((b) => !bids.has(b.id))];
-    const rids = new Set(this.snap.ratings.map((r) => r.id));
-    this.snap.ratings = [...this.snap.ratings, ...demo.ratings.filter((r) => !rids.has(r.id))];
     this.emit();
   }
 

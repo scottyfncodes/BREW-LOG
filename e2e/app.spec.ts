@@ -37,6 +37,7 @@ async function importCSV(page: Page, file: string) {
 test('empty states are intentional, not a wall of zeros', async ({ page }) => {
   const errors = await fresh(page);
   await expect(page.getByRole('link', { name: 'Log your first beer' })).toBeVisible();
+  await expect(page.getByText(/demo/i)).toHaveCount(0);
   await expect(page.locator('.stat-strip')).toHaveCount(0);
   await page.goto('./#/beers');
   await expect(page.getByText('No beers yet.')).toBeVisible();
@@ -187,23 +188,16 @@ test('landscape and insights hold up with 150 beers', async ({ page }) => {
   void canvas;
 });
 
-test('demo data is labeled and clears cleanly', async ({ page }) => {
-  await fresh(page);
-  await page.getByRole('button', { name: 'Preview with demo data' }).click();
-  await expect(page.getByText(/demo data/).first()).toBeVisible();
-  await page.goto('./#/beers');
-  await expect(page.locator('.beer-card.demo').first()).toBeVisible();
-  await page.goto('./#/settings');
-  await page.getByRole('button', { name: 'Clear demo data' }).click();
-  await expect(page.getByRole('status')).toContainText('Demo data cleared');
-  await page.goto('./');
-  await expect(page.getByText('Your beer history starts here.')).toBeVisible();
-});
-
 test('layout fits the screen without horizontal scroll and controls are labeled', async ({ page }) => {
   await fresh(page);
-  await page.getByRole('button', { name: 'Preview with demo data' }).click();
-  for (const route of ['./', './#/log', './#/beers', './#/breweries', './#/insights', './#/settings', './#/beer/demo_b_0', './#/brewery/demo_br_0']) {
+  await importCSV(page, 'small.csv');
+  await page.getByRole('button', { name: 'Import 2 beers' }).click();
+  await expect(page.getByRole('status')).toContainText('Imported 2 beers');
+  await page.goto('./#/beers');
+  const beer = (await page.locator('.beer-card').first().getAttribute('href'))!;
+  await page.goto('./#/breweries');
+  const brewery = (await page.locator('.brewery-card').first().getAttribute('href'))!;
+  for (const route of ['./', './#/log', './#/beers', './#/breweries', './#/insights', './#/settings', './' + beer, './' + brewery]) {
     await page.goto(route);
     await page.waitForTimeout(150);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

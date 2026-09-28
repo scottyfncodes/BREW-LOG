@@ -5,7 +5,7 @@ import { summarize } from '../data/stats';
 import { chronoDesc } from '../data/views';
 import { formatScore, plural } from '../data/util';
 import { href, navigate } from '../router';
-import { BeerCard, toast } from '../ui/components';
+import { BeerCard } from '../ui/components';
 import { BrandMark, IconGear, IconPlus, IconSpark } from '../ui/icons';
 
 export const prefersReducedMotion = () =>
@@ -58,11 +58,6 @@ export function Home() {
         : 'Higher on the mountain means we loved it more.';
   }
 
-  const loadDemo = async () => {
-    await store.loadDemo();
-    toast('Demo history loaded');
-  };
-
   return (
     <div>
       <section class="hero" aria-label="Beer landscape">
@@ -95,11 +90,6 @@ export function Home() {
               <a class="btn primary" href={href('log')}>
                 <IconPlus /> Log your first beer
               </a>
-              <div style={{ marginTop: '14px' }}>
-                <button class="btn ghost sm" style={{ color: 'rgba(255,236,214,.8)', borderColor: 'rgba(255,236,214,.2)' }} onClick={loadDemo}>
-                  Preview with demo data
-                </button>
-              </div>
             </div>
           </div>
         ) : (
@@ -166,23 +156,6 @@ export function Home() {
           </div>
         )}
 
-        {store.hasDemo && (
-          <div class="card growing-note">
-            <IconSpark />
-            <div class="small" style={{ flex: 1 }}>
-              You're looking at <b>demo data</b>. It's labeled and can be removed in one tap.
-            </div>
-            <button
-              class="btn sm"
-              onClick={async () => {
-                await store.clear('demo');
-                toast('Demo data cleared');
-              }}
-            >
-              Clear
-            </button>
-          </div>
-        )}
 
         {n > 0 && (
           <section class="section">
