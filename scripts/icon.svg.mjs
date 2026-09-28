@@ -1,0 +1,44 @@
+// Source artwork for the BREW LOG app icon. `rounded` adds the corner radius
+// used for the favicon; Home Screen icons are full-bleed (iOS masks them).
+export function iconSVG({ rounded = false, pad = 0 } = {}) {
+  const r = rounded ? 112 : 0;
+  const s = 512;
+  const inner = `
+  <g transform="translate(${pad} ${pad}) scale(${(s - pad * 2) / s})">
+    <circle cx="332" cy="112" r="70" fill="url(#halo)"/>
+    <circle cx="332" cy="112" r="24" fill="#ffd98a"/>
+    <circle cx="332" cy="112" r="12" fill="#fff4d6"/>
+    <circle cx="112" cy="96" r="5" fill="#fff3dc" opacity=".85"/>
+    <circle cx="196" cy="58" r="3.5" fill="#fff3dc" opacity=".7"/>
+    <circle cx="438" cy="196" r="4" fill="#fff3dc" opacity=".6"/>
+    <path d="M0 360 L96 262 L150 300 L230 214 L300 276 L352 238 L512 356 L512 512 L0 512Z" fill="#7a5270" opacity=".75"/>
+    <path d="M-10 420 L128 300 L186 336 L332 176 L420 272 L452 258 L522 330 L522 522 L-10 522Z" fill="#231a2a"/>
+    <path d="M332 176 L376 224 L356 220 L342 238 L322 218 L300 226Z" fill="#f6e7d6" opacity=".92"/>
+    <clipPath id="front"><path d="M-10 420 L128 300 L186 336 L332 176 L420 272 L452 258 L522 330 L522 522 L-10 522Z"/></clipPath>
+    <g fill="none" stroke="#ffcf9a" stroke-opacity=".22" stroke-width="5" stroke-linecap="round" clip-path="url(#front)">
+      <path d="M90 400 Q190 330 250 300 T420 330"/>
+      <path d="M60 450 Q180 380 270 360 T480 380"/>
+      <path d="M200 330 Q280 250 380 262"/>
+    </g>
+    <path d="M128 300 L186 336 L332 176 L420 272 L452 258 L522 330" fill="none" stroke="#ffc48c" stroke-opacity=".55" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="-10" y="464" width="532" height="60" fill="#150f18"/>
+  </g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f2140"/>
+      <stop offset=".55" stop-color="#6a4666"/>
+      <stop offset=".86" stop-color="#e79a5e"/>
+    </linearGradient>
+    <radialGradient id="halo">
+      <stop offset="0" stop-color="#ffcf80" stop-opacity=".75"/>
+      <stop offset="1" stop-color="#ffb060" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="clip"><rect width="512" height="512" rx="${r}"/></clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="512" height="512" fill="url(#sky)"/>
+    ${inner}
+  </g>
+</svg>`;
+}
