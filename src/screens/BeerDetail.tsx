@@ -56,7 +56,6 @@ export function BeerDetail({ id }: { id: ID }) {
       </div>
 
       <article class="card detail-card">
-        {b.demo && <div class="eyebrow" style={{ marginBottom: '6px' }}>Demo entry</div>}
         <h1 class="detail-title">{b.name}</h1>
         <div class="detail-sub">
           <a href={href(`brewery/${b.breweryId}`)}>{v.breweryName}</a>

@@ -55,7 +55,7 @@ export function BeerCard({ v, people, showDate = true }: { v: BeerView; people: 
   const b = v.beer;
   const meta2 = [showDate && b.date ? formatDate(b.date, 'short') : '', v.placeLabel].filter(Boolean).join(' · ');
   return (
-    <a class={`card beer-card ${b.demo ? 'demo' : ''}`} href={href(`beer/${b.id}`)}>
+    <a class="card beer-card" href={href(`beer/${b.id}`)}>
       <div class="thumb">{photo ? <img src={photo} alt="" loading="lazy" decoding="async" /> : <StyleGlyph style={b.style} score={v.score} />}</div>
       <div class="body">
         <div class="title">{b.name}</div>
