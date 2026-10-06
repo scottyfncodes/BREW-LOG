@@ -1,43 +1,61 @@
-// Source artwork for the BREW LOG app icon. `rounded` adds the corner radius
-// used for the favicon; Home Screen icons are full-bleed (iOS masks them).
+// Source artwork for the BREW LOG app icon: a pint of amber beer under a dusk
+// sky, its foam head spilling over and the Beer Landscape's mountains glowing
+// inside the glass. `rounded` adds the corner radius used for the favicon;
+// Home Screen icons are full-bleed (iOS masks them). `pad` shrinks the art
+// into the maskable safe zone while the sky still fills the tile.
 export function iconSVG({ rounded = false, pad = 0 } = {}) {
   const r = rounded ? 112 : 0;
   const s = 512;
   const inner = `
   <g transform="translate(${pad} ${pad}) scale(${(s - pad * 2) / s})">
-    <circle cx="332" cy="112" r="70" fill="url(#halo)"/>
-    <circle cx="332" cy="112" r="24" fill="#ffd98a"/>
-    <circle cx="332" cy="112" r="12" fill="#fff4d6"/>
-    <circle cx="112" cy="96" r="5" fill="#fff3dc" opacity=".85"/>
-    <circle cx="196" cy="58" r="3.5" fill="#fff3dc" opacity=".7"/>
-    <circle cx="438" cy="196" r="4" fill="#fff3dc" opacity=".6"/>
-    <path d="M0 360 L96 262 L150 300 L230 214 L300 276 L352 238 L512 356 L512 512 L0 512Z" fill="#7a5270" opacity=".75"/>
-    <path d="M-10 420 L128 300 L186 336 L332 176 L420 272 L452 258 L522 330 L522 522 L-10 522Z" fill="#231a2a"/>
-    <path d="M332 176 L376 224 L356 220 L342 238 L322 218 L300 226Z" fill="#f6e7d6" opacity=".92"/>
-    <clipPath id="front"><path d="M-10 420 L128 300 L186 336 L332 176 L420 272 L452 258 L522 330 L522 522 L-10 522Z"/></clipPath>
-    <g fill="none" stroke="#ffcf9a" stroke-opacity=".22" stroke-width="5" stroke-linecap="round" clip-path="url(#front)">
-      <path d="M90 400 Q190 330 250 300 T420 330"/>
-      <path d="M60 450 Q180 380 270 360 T480 380"/>
-      <path d="M200 330 Q280 250 380 262"/>
-    </g>
-    <path d="M128 300 L186 336 L332 176 L420 272 L452 258 L522 330" fill="none" stroke="#ffc48c" stroke-opacity=".55" stroke-width="5" stroke-linejoin="round"/>
-    <rect x="-10" y="464" width="532" height="60" fill="#150f18"/>
+    <circle cx="256" cy="300" r="230" fill="url(#halo)"/>
+  <g fill="#fff3dc"><circle cx="70" cy="80" r="4" opacity=".7"/><circle cx="440" cy="70" r="3.5" opacity=".6"/><circle cx="460" cy="190" r="3" opacity=".5"/><circle cx="56" cy="210" r="3" opacity=".5"/><circle cx="130" cy="40" r="2.5" opacity=".5"/></g>
+  <!-- pint -->
+  <g clip-path="url(#glass)">
+  <rect x="140" y="160" width="232" height="320" fill="url(#beer)"/>
+  <!-- the landscape lives in the beer -->
+  <path d="M140 470 L 140 420 L 200 368 L 232 392 L 280 340 L 320 384 L 372 350 L 372 480 Z" fill="#9a4a0c" opacity=".55"/>
+  <path d="M280 340 L 296 357 L 288 356 L 281 364 L 273 356 L 266 356 Z" fill="#ffe2a6" opacity=".7"/>
+  <g fill="#fff6dc" opacity=".75">
+  <circle cx="206" cy="300" r="5"/><circle cx="214" cy="256" r="3.5"/><circle cx="200" cy="228" r="2.5"/>
+  <circle cx="300" cy="320" r="4"/><circle cx="292" cy="276" r="3"/><circle cx="304" cy="240" r="4.5"/>
+  <circle cx="252" cy="290" r="3"/><circle cx="258" cy="246" r="2.2"/><circle cx="326" cy="210" r="2.6"/>
+  </g>
+  <rect x="166" y="160" width="34" height="320" fill="url(#shine)"/>
+  </g>
+  <path d="M150 168 L 362 168 L 338 450 C 336 462, 328 468, 316 468 L 196 468 C 184 468, 176 462, 174 450 Z" fill="none" stroke="#fff3dc" stroke-opacity=".55" stroke-width="6" stroke-linejoin="round"/>
+  <!-- foam head, spilling over -->
+  <path d="M138 196 C 118 190, 116 156, 140 146 C 138 116, 172 98, 196 112 C 208 84, 252 78, 268 102 C 290 82, 330 92, 332 120 C 360 112, 384 138, 372 164 C 388 176, 380 204, 360 202 C 360 226, 344 236, 334 220 L 334 196 Z" fill="#fff8ea"/>
+  <path d="M360 202 C 362 226, 348 240, 338 226" fill="#fff8ea"/>
+  <path d="M150 196 C 196 206, 300 206, 360 196" fill="none" stroke="#e8d9bd" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <g fill="#e8d9bd" opacity=".9"><circle cx="196" cy="150" r="7"/><circle cx="262" cy="134" r="5"/><circle cx="314" cy="156" r="6"/><circle cx="232" cy="172" r="4"/></g>
   </g>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1f2140"/>
-      <stop offset=".55" stop-color="#6a4666"/>
-      <stop offset=".86" stop-color="#e79a5e"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2446"/>
+      <stop offset="0.7" stop-color="#3c2a44"/>
+      <stop offset="1" stop-color="#1a1622"/>
+    </linearGradient>
+    <linearGradient id="beer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffc24a"/>
+      <stop offset="0.55" stop-color="#f29a1e"/>
+      <stop offset="1" stop-color="#c8650f"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#fff" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
     <radialGradient id="halo">
-      <stop offset="0" stop-color="#ffcf80" stop-opacity=".75"/>
-      <stop offset="1" stop-color="#ffb060" stop-opacity="0"/>
+      <stop offset="0" stop-color="#ffc24a" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#ffc24a" stop-opacity="0"/>
     </radialGradient>
+    <clipPath id="glass"><path d="M150 168 L 362 168 L 338 450 C 336 462, 328 468, 316 468 L 196 468 C 184 468, 176 462, 174 450 Z"/></clipPath>
     <clipPath id="clip"><rect width="512" height="512" rx="${r}"/></clipPath>
   </defs>
   <g clip-path="url(#clip)">
-    <rect width="512" height="512" fill="url(#sky)"/>
+    <rect width="512" height="512" fill="url(#bg)"/>
     ${inner}
   </g>
 </svg>`;
