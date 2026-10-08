@@ -69,9 +69,12 @@ export function App() {
 
   const tab = section === undefined ? 'home' : section === 'beer' ? 'beers' : section === 'brewery' ? 'breweries' : section;
   const cur = (t: string) => (tab === t ? 'page' : undefined);
+  // Before the first beer the landscape owns the whole screen and its own
+  // "Log your first beer" button is the one action, so the tab-bar + steps aside.
+  const firstRun = tab === 'home' && store.views.length === 0;
 
   return (
-    <div class="app">
+    <div class={`app ${firstRun ? 'first-run' : ''}`}>
       <main class={`main ${section === undefined ? 'flush' : ''}`} id="main">
         {page}
       </main>

@@ -1,5 +1,5 @@
 import type { BeerView, Brewery } from '../data/types';
-import { computeLayout, pickBeer, pickStar, rangeHeightAt, type Layout, type PlacedBeer, type Range, type Star } from './layout';
+import { computeLayout, pickBeer, pickStar, previewLayout, rangeHeightAt, type Layout, type PlacedBeer, type Preview, type Range, type Star } from './layout';
 import { hash01 } from '../data/util';
 
 type RGB = [number, number, number];
@@ -19,6 +19,9 @@ const RANGE_BACK = hex('#5d4863');
 const EMBER_LOW = hex('#b4643a');
 const EMBER_HIGH = hex('#ffd98a');
 const STAR = hex('#fff3dc');
+const GHOST = hex('#ffd9b0');
+/** One full pass of the empty-state sketch filling in, range by range. */
+const PREVIEW_CYCLE_MS = 11000;
 
 export interface LandscapeOptions {
   onPickBeer?: (id: string, at: { x: number; y: number }) => void;
@@ -38,6 +41,8 @@ export class Landscape {
   private views: BeerView[] = [];
   private breweries: Brewery[] = [];
   private layout?: Layout;
+  /** Sketch of the landscape to come; only while there are no beers. */
+  private preview?: Preview;
   private prevRanges = new Map<string, Range>();
   private growStart = 0;
   private arrival?: { id: string; start: number };
@@ -47,6 +52,7 @@ export class Landscape {
   private glow: HTMLCanvasElement;
   private highlight?: string;
   private ambient: { x: number; y: number; r: number; p: number; s: number }[] = [];
+  private clouds: { x: number; y: number; w: number; h: number; s: number; a: number }[] = [];
 
   constructor(canvas: HTMLCanvasElement, private opts: LandscapeOptions = {}) {
     this.canvas = canvas;
@@ -113,7 +119,17 @@ export class Landscape {
   private relayout() {
     if (!this.w) return;
     this.layout = computeLayout(this.views, this.breweries, this.w, this.h);
+    this.preview = this.views.length ? undefined : previewLayout(this.w, this.h);
     const m = this.layout.maturity;
+    // A few slow clouds; they thin out as the sky deepens into night.
+    this.clouds = Array.from({ length: 4 }, (_, i) => ({
+      x: hash01('cx' + i) * this.w,
+      y: this.layout!.base * (0.22 + hash01('cy' + i) * 0.4),
+      w: this.w * (0.18 + hash01('cw' + i) * 0.16),
+      h: 10 + hash01('ch' + i) * 10,
+      s: (3 + hash01('cs' + i) * 4) * (i % 2 ? 1 : -1),
+      a: (0.035 + hash01('ca' + i) * 0.03) * (1 - 0.65 * m),
+    }));
     const count = Math.round(36 + 180 * m);
     this.ambient = Array.from({ length: count }, (_, i) => ({
       x: hash01('ax' + i) * this.w,
@@ -253,20 +269,6 @@ export class Landscape {
     c.closePath();
     c.fillStyle = rgba(mix(RANGE_BACK, hex('#b88073'), 0.35), 0.55);
     c.fill();
-    if (empty) {
-      // Sparse, dashed survey lines hint at the landscape still to come.
-      c.save();
-      c.clip();
-      c.strokeStyle = 'rgba(255,225,190,0.16)';
-      c.setLineDash([3, 5]);
-      for (let i = 1; i <= 3; i++) {
-        c.beginPath();
-        c.moveTo(0, L.base - i * 9);
-        c.lineTo(w, L.base - i * 9);
-        c.stroke();
-      }
-      c.restore();
-    }
   }
 
   private rangePath(c: CanvasRenderingContext2D, L: Layout, r: Range) {
@@ -451,6 +453,112 @@ export class Landscape {
     c.globalAlpha = 1;
   }
 
+  private drawClouds(c: CanvasRenderingContext2D, secs: number) {
+    const { w } = this;
+    for (const k of this.clouds) {
+      const span = w + k.w * 2;
+      const x = ((((k.x + secs * k.s) % span) + span) % span) - k.w;
+      c.fillStyle = rgba(GHOST, k.a);
+      for (const [dx, sw, sh] of [
+        [0, 1, 1],
+        [-0.3, 0.55, 0.7],
+        [0.32, 0.6, 0.65],
+      ] as const) {
+        c.beginPath();
+        c.ellipse(x + dx * k.w, k.y - (1 - sh) * k.h * 0.5, k.w * 0.5 * sw, k.h * sh, 0, 0, Math.PI * 2);
+        c.fill();
+      }
+    }
+  }
+
+  /**
+   * The sketch of what this place becomes. Ranges "fill in" one after another
+   * over the cycle (phase 0…1); phase -1 holds a calm half-filled frame for
+   * reduced motion.
+   */
+  private drawPreview(c: CanvasRenderingContext2D, L: Layout, P: Preview, phase: number) {
+    const n = P.ranges.length;
+    // How filled-in each range is right now: a soft bump that travels through
+    // the ranges in order, then everything fades back to the sketch.
+    const fill = (i: number) => {
+      if (phase < 0) return 0.5;
+      const t = phase * (n + 1.5) - i;
+      return Math.max(0, Math.min(1, Math.min(t * 1.6, (n + 1.2 - phase * (n + 1.5)) * 0.9)));
+    };
+
+    // Stars first, so ridges sit in front of them; they brighten as the first range fills.
+    const sf = phase < 0 ? 0.5 : fill(0);
+    for (const s of P.stars) {
+      c.globalAlpha = 0.25 + 0.35 * sf;
+      const gr = s.r * 5;
+      c.drawImage(this.glow, s.x - gr, s.y - gr, gr * 2, gr * 2);
+      c.globalAlpha = 1;
+      c.fillStyle = rgba(STAR, 0.45 + 0.4 * sf);
+      c.beginPath();
+      c.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      c.fill();
+    }
+
+    c.lineWidth = 0.9;
+    const sorted = [...P.ranges].sort((a, b) => b.depth - a.depth);
+    c.font = `600 ${this.w < 420 ? 8.5 : 10}px ${MONO}`;
+    c.textAlign = 'center';
+    for (const r of sorted) {
+      const i = P.ranges.indexOf(r);
+      const f = fill(i);
+      this.rangePath(c, L, r);
+      const g = c.createLinearGradient(0, L.base - r.h, 0, L.base);
+      g.addColorStop(0, rgba(mix(RANGE_BACK, hex('#9a6e78'), 0.3), 0.08 + 0.3 * f));
+      g.addColorStop(1, rgba(RANGE_FRONT, 0.12 + 0.4 * f));
+      c.fillStyle = g;
+      c.fill();
+      c.setLineDash(f > 0.85 ? [] : [3, 4]);
+      c.strokeStyle = rgba(GHOST, 0.3 + 0.35 * f);
+      c.stroke();
+      const y = L.base - rangeHeightAt(r, r.cx) - 10;
+      c.fillStyle = rgba(GHOST, 0.3 + 0.45 * f);
+      c.fillText(r.label.toUpperCase(), r.cx, y);
+    }
+    c.setLineDash([]);
+
+    // Lights appear as their range fills in.
+    for (const b of P.beers) {
+      const i = P.ranges.findIndex((r) => Math.abs(r.cx - b.x) <= r.w * 2.4 && b.y > L.base - rangeHeightAt(r, b.x) - 1);
+      const f = fill(Math.max(0, i));
+      c.beginPath();
+      c.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      if (f > 0.6) {
+        c.globalAlpha = (f - 0.6) / 0.4;
+        const gr = b.r * 4;
+        c.drawImage(this.glow, b.x - gr, b.y - gr, gr * 2, gr * 2);
+        c.fillStyle = rgba(EMBER_HIGH, 0.9);
+        c.fill();
+        c.globalAlpha = 1;
+      } else {
+        c.strokeStyle = rgba(GHOST, 0.35 + 0.3 * f);
+        c.lineWidth = 0.9;
+        c.stroke();
+      }
+    }
+
+    // A short trail of cairns along the foreground.
+    c.setLineDash([2, 5]);
+    c.strokeStyle = rgba(GHOST, 0.28);
+    c.beginPath();
+    P.trail.forEach((p, i) => (i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y)));
+    c.stroke();
+    c.setLineDash([]);
+    for (const p of P.trail) {
+      c.beginPath();
+      c.moveTo(p.x, p.y - p.r * 1.8);
+      c.lineTo(p.x + p.r, p.y);
+      c.lineTo(p.x - p.r, p.y);
+      c.closePath();
+      c.strokeStyle = rgba(GHOST, 0.5);
+      c.stroke();
+    }
+  }
+
   private frame(now: number) {
     const L = this.layout;
     if (!L || !this.w) return;
@@ -460,6 +568,9 @@ export class Landscape {
     c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     const motion = !this.opts.reducedMotion;
     const secs = now / 1000;
+
+    this.drawClouds(c, motion ? secs : 0);
+    if (this.preview) this.drawPreview(c, L, this.preview, motion ? (now % PREVIEW_CYCLE_MS) / PREVIEW_CYCLE_MS : -1);
 
     for (const a of this.ambient) {
       const tw = motion ? 0.5 + 0.5 * Math.sin(secs * a.s + a.p) : 0.7;

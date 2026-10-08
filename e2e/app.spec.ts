@@ -10,7 +10,7 @@ async function fresh(page: Page) {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('./');
-  await expect(page.getByText('Your beer history starts here.')).toBeVisible();
+  await expect(page.getByText('Every beer you two log grows this place.')).toBeVisible();
   return errors;
 }
 
@@ -22,8 +22,11 @@ async function rate(page: Page, index: number, fraction: number) {
   await page.mouse.click(box.x + pad + (box.width - pad * 2) * fraction, box.y + 20);
 }
 
+// On first run the landscape's own button is the way in; afterwards it's the tab-bar +.
+const logLink = (page: Page) => page.getByRole('link', { name: /^(Log a beer|Log your first beer)$/ });
+
 async function logBeer(page: Page, name: string, brewery: string, style: string) {
-  await page.getByRole('link', { name: 'Log a beer' }).click();
+  await logLink(page).click();
   await page.getByLabel('Beer', { exact: true }).fill(name);
   await page.getByLabel('Brewery').fill(brewery);
   await page.locator('#f-style').fill(style);
@@ -37,6 +40,23 @@ async function importCSV(page: Page, file: string) {
 test('empty states are intentional, not a wall of zeros', async ({ page }) => {
   const errors = await fresh(page);
   await expect(page.getByRole('link', { name: 'Log your first beer' })).toBeVisible();
+  // One primary action: the tab-bar + steps aside while the landscape's button is there.
+  await expect(page.getByRole('link', { name: 'Log a beer' })).toHaveCount(0);
+  // The landscape fills the screen down to the tab bar — no dead band, no scroll.
+  const fit = await page.evaluate(() => {
+    const hero = document.querySelector('.hero')!.getBoundingClientRect();
+    const nav = document.querySelector('.nav')!.getBoundingClientRect();
+    const cta = [...document.querySelectorAll('a')].find((a) => a.textContent?.includes('Log your first beer'))!.getBoundingClientRect();
+    const rail = nav.width < innerWidth / 2;
+    return {
+      gap: rail ? innerHeight - hero.bottom : nav.top - hero.bottom,
+      scroll: document.documentElement.scrollHeight - innerHeight,
+      ctaInView: cta.bottom <= (rail ? innerHeight : nav.top),
+    };
+  });
+  expect(Math.abs(fit.gap)).toBeLessThanOrEqual(2);
+  expect(fit.scroll).toBeLessThanOrEqual(1);
+  expect(fit.ctaInView).toBe(true);
   await expect(page.getByText(/demo/i)).toHaveCount(0);
   await expect(page.locator('.stat-strip')).toHaveCount(0);
   await page.goto('./#/beers');
@@ -68,6 +88,7 @@ test('log a beer with two ratings, see it land, and survive a reload', async ({ 
   await expect(page).toHaveURL(/#\/?$/);
   await expect(page.getByText('Your landscape is beginning to take shape.')).toBeVisible();
   await expect(page.locator('.stat-strip')).toContainText('1');
+  await expect(page.getByRole('link', { name: 'Log a beer' })).toBeVisible();
 
   await page.reload();
   await expect(page.getByText('Your landscape is beginning to take shape.')).toBeVisible();
@@ -80,7 +101,7 @@ test('log a beer with two ratings, see it land, and survive a reload', async ({ 
 
 test('one-person rating and validation feedback', async ({ page }) => {
   await fresh(page);
-  await page.getByRole('link', { name: 'Log a beer' }).click();
+  await logLink(page).click();
   await page.getByRole('button', { name: 'Save beer' }).click();
   await expect(page.getByRole('alert')).toContainText('name');
   await page.getByLabel('Beer', { exact: true }).fill('Solo Sipper');
@@ -231,6 +252,6 @@ test('PWA: manifest, icons and offline reload', async ({ page, context, browserN
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByText('BREW LOG').first()).toBeVisible();
-  await expect(page.getByText('Your beer history starts here.')).toBeVisible();
+  await expect(page.getByText('Every beer you two log grows this place.')).toBeVisible();
   await context.setOffline(false);
 });
