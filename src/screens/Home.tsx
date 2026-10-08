@@ -60,14 +60,14 @@ export function Home() {
 
   return (
     <div>
-      <section class="hero" aria-label="Beer landscape">
+      <section class={`hero ${n === 0 ? 'first-run' : ''}`} aria-label="Beer landscape">
         <canvas
           ref={canvas}
           role="img"
           aria-label={
             n
               ? `A landscape of ${plural(n, 'beer')}: each style is a mountain, each beer a light placed at the height of its score, each brewery a star.`
-              : 'An empty twilight landscape waiting for the first beer.'
+              : 'A sketch of the landscape to come: mountains for styles, lights for beers, stars for breweries, waiting for the first beer.'
           }
         />
         <div class="hero-top">
@@ -81,17 +81,18 @@ export function Home() {
         </div>
 
         {n === 0 && store.ready ? (
-          <div class="hero-empty">
-            <div>
-              <div class="eyebrow" style={{ color: 'rgba(255,230,200,.6)' }}>
-                Our beer landscape
-              </div>
-              <h1>Your beer history starts here.</h1>
+          <>
+            <div class="hero-empty-head">
+              <div class="eyebrow">{pairName(people.map((p) => p.name))}</div>
+              <h1>Every beer you two log grows this place.</h1>
+            </div>
+            <div class="hero-empty">
+              <p>Each style rises into a mountain, each beer a light at the height of its score, each brewery a star.</p>
               <a class="btn primary" href={href('log')}>
                 <IconPlus /> Log your first beer
               </a>
             </div>
-          </div>
+          </>
         ) : (
           <div class="hero-caption">
             <div class="eyebrow">Our beer landscape</div>
@@ -183,6 +184,12 @@ export function Home() {
       </div>
     </div>
   );
+}
+
+/** "Scott & Ellen's beer landscape", or a plain fallback without names. */
+function pairName(names: string[]) {
+  const named = names.map((x) => x.trim()).filter(Boolean);
+  return named.length === 2 ? `${named[0]} & ${named[1]}'s beer landscape` : 'Our beer landscape';
 }
 
 function clampX(x: number, w = 400) {

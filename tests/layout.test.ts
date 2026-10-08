@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeLayout, pickBeer, rangeHeightAt } from '../src/viz/layout';
+import { BASE_FRAC, computeLayout, pickBeer, previewLayout, rangeHeightAt } from '../src/viz/layout';
 import { buildViews } from '../src/data/views';
 import { bigSnap, makeSnap } from './helpers';
 
@@ -7,6 +7,25 @@ const W = 390;
 const H = 640;
 
 describe('beer landscape layout', () => {
+  it('sketches a stable preview of the landscape to come before the first beer', () => {
+    for (const [w, h] of [[W, 780], [1344, 900]]) {
+      const P = previewLayout(w, h);
+      const base = h * BASE_FRAC;
+      expect(P.ranges.length).toBeGreaterThanOrEqual(3);
+      expect(P.beers.length).toBeGreaterThan(P.ranges.length);
+      for (const r of P.ranges) expect(base - r.h).toBeGreaterThan(h * 0.3); // room for the headline above
+      for (const b of P.beers) {
+        expect(b.y).toBeLessThan(base);
+        expect(P.ranges.some((r) => b.y >= base - rangeHeightAt(r, b.x) - 0.5)).toBe(true);
+      }
+      for (const s of [...P.stars, ...P.beers, ...P.trail]) {
+        expect(s.x).toBeGreaterThanOrEqual(0);
+        expect(s.x).toBeLessThanOrEqual(w);
+      }
+      expect(previewLayout(w, h)).toEqual(P);
+    }
+  });
+
   it('is sparse but valid with zero beers', () => {
     const L = computeLayout([], [], W, H);
     expect(L.ranges).toHaveLength(0);
