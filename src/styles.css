@@ -260,7 +260,7 @@ select.input { background-image: linear-gradient(45deg, transparent 50%, var(--i
 .hero-top > * { pointer-events: auto; }
 .wordmark { font-family: var(--mono); font-weight: 700; letter-spacing: 0.34em; font-size: 13px; opacity: .92; display: flex; align-items: center; gap: 10px; }
 .wordmark svg { width: 22px; height: 22px; }
-.hero .icon-btn { background: rgba(255, 245, 230, 0.08); border-color: rgba(255, 245, 230, 0.14); color: #fbefe0; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.hero .icon-btn { background: rgba(26, 22, 34, 0.55); border-color: rgba(255, 245, 230, 0.16); color: #fbefe0; }
 .hero-caption { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 calc(18px + var(--safe-right)) 18px calc(18px + var(--safe-left)); pointer-events: none; }
 .hero-caption > * { pointer-events: auto; }
 .hero-caption .eyebrow { color: rgba(255, 230, 200, 0.65); }
@@ -288,7 +288,7 @@ select.input { background-image: linear-gradient(45deg, transparent 50%, var(--i
 .hero-legend i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ffd98a; box-shadow: 0 0 8px #ffb562; }
 .hero-legend i.star { background: #fff3dc; box-shadow: 0 0 6px #fff; width: 5px; height: 5px; }
 .hero-legend i.cairn { width: 0; height: 0; border-radius: 0; background: none; box-shadow: none; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 8px solid rgba(240,190,140,.85); }
-.peek { position: absolute; z-index: 5; transform: translate(-50%, calc(-100% - 14px)); background: rgba(28, 22, 32, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #fbefe0; border: 1px solid rgba(255, 230, 200, 0.16); border-radius: 14px; padding: 10px 12px; min-width: 170px; max-width: 240px; text-decoration: none; box-shadow: 0 12px 30px -10px rgba(0,0,0,.6); animation: peek .22s ease; }
+.peek { position: absolute; z-index: 5; transform: translate(-50%, calc(-100% - 14px)); background: #1c1620; color: #fbefe0; border: 1px solid rgba(255, 230, 200, 0.16); border-radius: 14px; padding: 10px 12px; min-width: 170px; max-width: 240px; text-decoration: none; box-shadow: 0 12px 30px -10px rgba(0,0,0,.6); animation: peek .22s ease; }
 .peek .t { font-family: var(--serif); font-weight: 600; font-size: 16px; line-height: 1.15; }
 .peek .s { font-size: 12px; color: rgba(255, 230, 200, 0.7); margin-top: 2px; }
 .peek .n { font-family: var(--serif); font-size: 20px; float: right; margin-left: 10px; color: #ffd98a; }

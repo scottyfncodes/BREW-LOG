@@ -27,7 +27,7 @@ export function App() {
   if (store.error)
     return (
       <div class="boot" style={{ letterSpacing: 0, padding: '24px', textAlign: 'center' }}>
-        Couldn't open the on-device database: {store.error}. Private browsing can block storage — try a normal window.
+        Couldn't open the on-device database: {store.error}. Private browsing can block storage, so try a normal window.
       </div>
     );
 

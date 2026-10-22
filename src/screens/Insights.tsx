@@ -43,7 +43,7 @@ export function Insights() {
     return (
       <div class="page-enter">
         <PageHead eyebrow="Insights" title="Our taste" />
-        <Empty title="Nothing to see — yet." action={<a class="btn primary" href={href('log')}><IconPlus /> Log a beer</a>}>
+        <Empty title="Nothing to see yet." action={<a class="btn primary" href={href('log')}><IconPlus /> Log a beer</a>}>
           Patterns appear here as your history grows. We'll only say things the data actually supports.
         </Empty>
       </div>
@@ -132,7 +132,7 @@ export function Insights() {
             <div class="card obs">
               <div class="k">Our most logged style</div>
               <div class="v">{taste.mostLoggedStyle.label}</div>
-              <div class="d">{plural(taste.mostLoggedStyle.count, 'beer')} — {Math.round((taste.mostLoggedStyle.count / n) * 100)}% of everything we've logged.</div>
+              <div class="d">{plural(taste.mostLoggedStyle.count, 'beer')}, {Math.round((taste.mostLoggedStyle.count / n) * 100)}% of everything we've logged.</div>
             </div>
           )}
           {taste.topBrewery ? (
@@ -166,7 +166,7 @@ export function Insights() {
                     <span class={`p${i}`}>{p.name}</span> {formatScore(taste.mostDivisive!.scores[p.id])}
                   </span>
                 ))}{' '}
-                — {formatScore(taste.mostDivisive.disagreement)} apart.
+                ({formatScore(taste.mostDivisive.disagreement)} apart).
               </div>
             </div>
           )}
@@ -267,7 +267,7 @@ export function Insights() {
       </section>
 
       <section class="section ins-grid two">
-        <ChartCard title="Where we disagree" sub="Largest gaps between our scores — nobody's wrong">
+        <ChartCard title="Where we disagree" sub="Largest gaps between our scores. Nobody's wrong.">
           {splitAny ? (
             <div>
               {d.split.map((v) => {
@@ -295,7 +295,7 @@ export function Insights() {
           {d.places.length ? (
             <BeerMap places={d.places} />
           ) : (
-            <p class="muted small">Add a city, state, or country when you log and your map will fill in — only with places you've actually been.</p>
+            <p class="muted small">Add a city, state, or country when you log and your map will fill in, only with places you've actually been.</p>
           )}
         </ChartCard>
       </section>

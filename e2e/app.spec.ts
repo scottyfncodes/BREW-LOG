@@ -64,7 +64,7 @@ test('empty states are intentional, not a wall of zeros', async ({ page }) => {
   await page.goto('./#/breweries');
   await expect(page.getByText('No breweries yet.')).toBeVisible();
   await page.goto('./#/insights');
-  await expect(page.getByText('Nothing to see — yet.')).toBeVisible();
+  await expect(page.getByText('Nothing to see yet.')).toBeVisible();
   await page.goto('./#/gallery');
   await expect(page.getByText('No photos yet.')).toBeVisible();
   expect(errors).toEqual([]);

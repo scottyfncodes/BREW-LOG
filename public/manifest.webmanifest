@@ -1,7 +1,7 @@
 {
   "name": "BREW LOG",
   "short_name": "BREW LOG",
-  "description": "Our personal beer journal — every beer we've met, growing into a landscape.",
+  "description": "Our personal beer journal: every beer we've met, growing into a landscape.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
