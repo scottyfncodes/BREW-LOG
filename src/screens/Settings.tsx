@@ -96,7 +96,7 @@ export function Settings() {
   };
 
   const n = store.snap.beers.length;
-  const mb = (b?: number) => (b === undefined ? '—' : b < 1e6 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1e6).toFixed(1)} MB`);
+  const mb = (b?: number) => (b === undefined ? '–' : b < 1e6 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1e6).toFixed(1)} MB`);
   const dirty = names.some((nm, i) => nm !== store.people[i]?.name);
 
   return (
@@ -164,12 +164,12 @@ export function Settings() {
         <section class="card set-item">
           <h3>Storage</h3>
           <p>
-            Everything lives on this device, in your browser's database — no account, no server.
+            Everything lives on this device, in your browser's database. No account, no server.
             {storage.usage !== undefined && ` Using ${mb(storage.usage)}.`}
             {storage.persisted === true && ' Storage is marked persistent.'}
           </p>
           <p class="small muted">
-            Tip: on iPhone, add BREW LOG to your Home Screen (Share → Add to Home Screen). Export a backup now and then — it's the one thing
+            Tip: on iPhone, add BREW LOG to your Home Screen (Share → Add to Home Screen). Export a backup now and then: it's the one thing
             that survives a lost phone.
           </p>
         </section>

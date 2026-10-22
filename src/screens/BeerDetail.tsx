@@ -6,7 +6,7 @@ import { formatDate, formatScore } from '../data/util';
 import { styleFamily } from '../data/styles';
 import { href, back } from '../router';
 import { BeerCard, Empty } from '../ui/components';
-import { IconBack, IconCalendar, IconDrop, IconEdit, IconPin, IconSpark } from '../ui/icons';
+import { IconBack, IconCalendar, IconDrop, IconEdit, IconPin, IconSummit } from '../ui/icons';
 
 export function BeerDetail({ id }: { id: ID }) {
   const store = useStore();
@@ -79,15 +79,15 @@ export function BeerDetail({ id }: { id: ID }) {
                 <span>
                   <span class={`dot p${i}`} /> {p.name}
                 </span>
-                <b class={v.scores[p.id] === 10 ? 'summit' : ''}>{v.scores[p.id] !== undefined ? formatScore(v.scores[p.id]) : '—'}</b>
+                <b class={v.scores[p.id] === 10 ? 'summit' : ''}>{v.scores[p.id] !== undefined ? formatScore(v.scores[p.id]) : '–'}</b>
               </div>
             ))}
-            {v.disagreement !== undefined && v.disagreement >= 1 && <div class="small muted">{formatScore(v.disagreement)} apart — a divisive one.</div>}
+            {v.disagreement !== undefined && v.disagreement >= 1 && <div class="small muted">{formatScore(v.disagreement)} apart. A divisive one.</div>}
           </div>
         </div>
         {ten && (
           <p class="small summit" style={{ marginTop: '10px', fontWeight: 600 }}>
-            <IconSpark width={14} height={14} style={{ verticalAlign: '-2px' }} /> A summit beer: 10.0.
+            <IconSummit width={14} height={14} style={{ verticalAlign: '-2px' }} /> A summit beer: 10.0.
           </p>
         )}
 

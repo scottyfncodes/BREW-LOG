@@ -45,7 +45,7 @@ export function clampScore(n: number): number {
 }
 
 export function formatScore(n: number | undefined): string {
-  return n === undefined ? '—' : n.toFixed(1);
+  return n === undefined ? '–' : n.toFixed(1);
 }
 
 export function mean(xs: number[]): number | undefined {

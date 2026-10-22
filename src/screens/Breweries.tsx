@@ -38,7 +38,7 @@ export function Breweries() {
       <div class="page-enter">
         <PageHead eyebrow="Breweries" title="Breweries we've met" />
         <Empty title="No breweries yet." action={<a class="btn primary" href={href('log')}><IconPlus /> Log a beer</a>}>
-          Breweries appear here on their own as you log beers — only the ones you've actually encountered.
+          Breweries appear here on their own as you log beers, and only the ones you've actually encountered.
         </Empty>
       </div>
     );
@@ -185,7 +185,7 @@ export function BreweryDetail({ id }: { id: ID }) {
                 <blockquote class="memory" style={{ margin: 0, fontSize: '17px' }}>
                   {v.beer.notes}
                   <div class="small muted" style={{ fontStyle: 'normal', fontFamily: 'var(--sans)', marginTop: '6px' }}>
-                    — {v.beer.name}, {formatDate(v.beer.date, 'short')}
+                    {v.beer.name}, {formatDate(v.beer.date, 'short')}
                   </div>
                 </blockquote>
               </a>

@@ -29,7 +29,8 @@ export const IconEdit = (p: P) => S(p, [<path d="M4 20h4L19 9l-4-4L4 16z" />, <p
 export const IconTrash = (p: P) => S(p, [<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" />]);
 export const IconCheck = (p: P) => S({ 'stroke-width': 2.4, ...p }, [<path d="M5 12.5l4.5 4.5L19 7.5" />]);
 export const IconDrop = (p: P) => S(p, [<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />]);
-export const IconSpark = (p: P) => S(p, [<path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18" />]);
+/** A single peak with one light on top: the 10.0 summit from the landscape. */
+export const IconSummit = (p: P) => S(p, [<path d="M3 20l9-12 9 12z" />, <path d="M9 12l3 1.8 3-1.8" />, <circle cx="12" cy="3.8" r="1.4" />]);
 export const IconPhoto = (p: P) => S(p, [<rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />, <path d="M3.5 16l5-5 4 4 3-3 5 5" />, <circle cx="15.5" cy="8.5" r="1.5" />]);
 export const IconMap = (p: P) => S(p, [<path d="M9 4L3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5z" />, <path d="M9 4v13M15 6.5v13" />]);
 export const IconDownload = (p: P) => S(p, [<path d="M12 4v11M7 10.5l5 5 5-5M4 20h16" />]);

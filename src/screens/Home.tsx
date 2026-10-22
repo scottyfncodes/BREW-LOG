@@ -6,7 +6,7 @@ import { chronoDesc } from '../data/views';
 import { formatScore, plural } from '../data/util';
 import { href, navigate } from '../router';
 import { BeerCard } from '../ui/components';
-import { BrandMark, IconGear, IconPlus, IconSpark } from '../ui/icons';
+import { BrandMark, IconGear, IconPlus, IconSummit } from '../ui/icons';
 
 export const prefersReducedMotion = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -149,9 +149,9 @@ export function Home() {
 
         {n > 0 && n <= 5 && (
           <div class="card growing-note">
-            <IconSpark />
+            <IconSummit />
             <div class="small">
-              Each style becomes its own mountain, each brewery a star. Log a few more and the ranges start to rise — insights
+              Each style becomes its own mountain, each brewery a star. Log a few more and the ranges start to rise. Insights
               appear once there's enough history to say something true.
             </div>
           </div>

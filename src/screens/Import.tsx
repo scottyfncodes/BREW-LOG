@@ -86,7 +86,7 @@ export function Import() {
         <div class="card set-item">
           <p>
             Choose a <b>.csv</b> file. From Google Sheets: File → Download → CSV. From Excel or Numbers: Export → CSV. Include a header row if you
-            have one — we'll guess which column is which.
+            have one and we'll guess which column is which.
           </p>
           <label class="btn primary" style={{ position: 'relative', justifySelf: 'start' }}>
             <IconUpload /> Choose CSV file
@@ -139,7 +139,7 @@ export function Import() {
                     value={mapping[i] ?? ''}
                     onChange={(e) => setMapping({ ...mapping, [i]: e.currentTarget.value as FieldKey | '' })}
                   >
-                    <option value="">— Skip —</option>
+                    <option value="">Skip this column</option>
                     {defs.map((d) => (
                       <option key={d.key} value={d.key} disabled={mapped.has(d.key) && mapping[i] !== d.key}>
                         {d.label}

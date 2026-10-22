@@ -21,7 +21,7 @@ describe('score validation', () => {
     expect(clampScore(0.2)).toBe(1);
     expect(clampScore(7.349)).toBe(7.3);
     expect(formatScore(10)).toBe('10.0');
-    expect(formatScore(undefined)).toBe('—');
+    expect(formatScore(undefined)).toBe('–');
     expect(isValidScore(10.0)).toBe(true);
     expect(isValidScore(10.01)).toBe(false);
   });

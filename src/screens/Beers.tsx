@@ -53,7 +53,7 @@ export function Beers({ query }: { query: URLSearchParams }) {
     return (
       <div class="page-enter">
         <Empty title="No beers yet." action={<a class="btn primary" href={href('log')}><IconPlus /> Log your first beer</a>}>
-          Every beer you log lands here — searchable by name, brewery, style, place, or the memories in your notes.
+          Every beer you log lands here, searchable by name, brewery, style, place, or the memories in your notes.
         </Empty>
       </div>
     );
